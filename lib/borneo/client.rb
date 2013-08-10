@@ -8,4 +8,8 @@ class Borneo::Client
     @redirect_url = redirect_url
   end
 
+  def for(access_token, refresh_token)
+    Borneo::AuthorizedProxy.new(self,access_token, refresh_token)
+  end
+
 end

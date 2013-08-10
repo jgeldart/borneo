@@ -15,4 +15,32 @@ describe Borneo::Client do
     end
   end
 
+  describe "for" do
+
+    let(:client) { Borneo::Client.new(client_id, client_secret, redirect_url) }
+    let(:access_token) { "ACCESS_TOKEN" }
+    let(:refresh_token) { "REFRESH_TOKEN" }
+
+    let(:proxy) { client.for(access_token, refresh_token) }
+
+    it "should return an authorized proxy" do
+      proxy.should be_a(Borneo::AuthorizedProxy)
+    end
+
+    describe "returned proxy" do
+      it "should have the creating client as its client" do
+        proxy.client.should == client
+      end
+
+      it "should contain the access token" do
+        proxy.access_token.should == access_token
+      end
+
+      it "should contain the refresh token" do
+        proxy.refresh_token.should == refresh_token
+      end
+    end
+
+  end
+
 end
