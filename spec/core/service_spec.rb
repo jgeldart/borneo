@@ -21,5 +21,46 @@ describe Borneo::Service do
       service.version.should == service_version
     end
 
+    describe "method proxy" do
+
+      let(:service) { Borneo::Service.new(proxy, service_name, service_version) }
+
+      it "should be returned for anything else" do
+        service.userinfo.should be_a(Borneo::MethodProxy)
+      end
+
+      it "should have the right components" do
+        service.userinfo._components.should == [:userinfo]
+      end
+
+      it "should have the right service" do
+        service.userinfo._service.should == service
+      end
+
+    end
+
+    describe "utility methods" do
+      let(:service) { Borneo::Service.new(proxy, service_name, service_version) }
+
+      describe "discovered service" do
+        it "should be callable" do
+          service.should respond_to(:_discovered_service)
+        end
+      end
+      describe "authorization" do
+        it "should be callable" do
+          service.should respond_to(:_authorization)
+        end
+      end
+      describe "client" do
+        it "should be callable" do
+          service.should respond_to(:_client)
+        end
+      end
+
+
+    end
+
+
   end
 end
