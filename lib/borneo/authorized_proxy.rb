@@ -8,4 +8,8 @@ class Borneo::AuthorizedProxy
     @refresh_token = refresh_token
   end
 
+  def service(name, version)
+    Borneo::Service.new(self, name, version)
+  end
+
 end
