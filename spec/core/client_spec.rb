@@ -15,6 +15,11 @@ describe Borneo::Client do
     end
   end
 
+  it "should cache the Google client value" do
+    client = Borneo::Client.new(client_id, client_secret, redirect_url)
+    client.google_client.should == client.google_client
+  end
+
   describe "for" do
 
     let(:client) { Borneo::Client.new(client_id, client_secret, redirect_url) }

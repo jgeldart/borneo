@@ -8,14 +8,16 @@ class Borneo::Client
     @client_id = client_id
     @client_secret = client_secret
     @redirect_url = redirect_url
+    @google_client = nil
   end
 
   def for(access_token, refresh_token)
+    google_client.authorization.clear_credentials!
     Borneo::AuthorizedProxy.new(self,access_token, refresh_token)
   end
 
   def google_client
-    Google::APIClient.new
+    @google_client ||= Google::APIClient.new
   end
 
 end
