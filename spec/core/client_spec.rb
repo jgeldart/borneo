@@ -5,6 +5,8 @@ describe Borneo::Client do
   let(:client_id) { "SOME_CLIENT_ID" }
   let(:client_secret) { "SOME_CLIENT_SECRET" }
   let(:redirect_url) { "http://localhost" }
+  let(:app_name) { "SomeApplication" }
+  let(:app_version) { "1.0.1" }
 
   describe "initialiser" do
     it "takes a client ID, client secret and redirect URL parameters" do
@@ -12,6 +14,12 @@ describe Borneo::Client do
       client.client_id.should == client_id
       client.client_secret.should == client_secret
       client.redirect_url.should == redirect_url
+    end
+
+    it "optionally takes an application name and version" do
+      client = Borneo::Client.new(client_id, client_secret, redirect_url, app_name, app_version)
+      client.application_name.should == app_name
+      client.application_version.should == app_version
     end
   end
 
