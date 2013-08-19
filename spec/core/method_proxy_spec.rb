@@ -84,4 +84,47 @@ describe Borneo::MethodProxy do
       profile.name.should == "John Smith"
     end
   end
+
+  describe "uploading" do
+    let(:drive_service) { Borneo::Service.new(proxy, "drive", "v2") }
+    let(:method_proxy) { Borneo::MethodProxy.new(drive_service, :insert, [:files]) }
+    let(:title) { "My Title" }
+    before do
+      stub_request(:get, "https://www.googleapis.com/discovery/v1/apis/drive/v2/rest")
+         .to_return(lambda {|request| File.new(File.dirname(__FILE__) + "/../drive_discovery_document.json")})
+
+      stub_request(:post, "https://www.googleapis.com/upload/drive/v2/files?uploadType=multipart")
+         .to_return( 
+            :status => 200,
+            :headers => { 'Content-Type' => 'application/json' },
+            :body => <<-RESP
+{
+ "kind": "drive#file",
+ "id": "1FIBM-hRZlKNrAAYAQjfM3XpnmZ_KLT6D_NWzhojKKPg",
+ "etag": "HK9znrxLd1pIgz63yXyznaLN5rM/MTM3NjAxMjQ0OTU0MQ",
+ "title": "#{title}",
+ "mimeType": "application/vnd.google-apps.document",
+ "labels": {
+  "starred": false,
+  "hidden": false,
+  "trashed": false,
+  "restricted": false,
+  "viewed": true
+ },
+ "createdDate": "2013-08-09T01:28:03.900Z",
+ "modifiedDate": "2013-08-09T01:40:49.541Z",
+ "modifiedByMeDate": "2013-08-09T01:40:49.541Z",
+ "lastViewedByMeDate": "2013-08-09T01:40:49.541Z"
+}
+            RESP
+                   )
+    end
+    it "should be callable with 2 arguments" do
+      method_proxy.should respond_to(:upload_file).with(2).arguments
+    end
+    it "should return" do
+      file = method_proxy.upload_file(File.dirname(__FILE__) + "/../example.html", "text/html", :title => title)
+      file.title.should == title
+    end
+  end
 end

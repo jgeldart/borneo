@@ -48,6 +48,15 @@ The objects returned from the methods behave like normal Ruby objects:
 Borneo raises an error if the operation wasn't permitted. If the access token is
 stale, the library will try to refresh it once before raising an error.
 
+## Media Uploads
+
+Some services support uploading of media files. Borneo provides an `upload_file` method
+that can be used to accomplish this:
+
+    service.files.insert.upload_file 'my_movie.mp4', 'video/mp4', :title => "Cats dancing!", :description => "More cats than ever before"
+
+Currently, only files on disk may be uploaded.
+
 ## Mocking
 
 To help test these services, you can switch the library into 'mocking mode' by:

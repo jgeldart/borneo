@@ -40,6 +40,32 @@ class Borneo::MethodProxy
 
   end
 
+  def upload_file(file_name, mime_type, params = {})
+    unless mocking_enabled?
+      file = Google::APIClient::UploadIO.new(file_name, mime_type)
+      method_call = lambda do
+        _client.execute(
+          :api_method => _method,
+          :parameters => { 'uploadType' => 'multipart' },
+          :authorization => _authorization,
+          :media => file,
+          :body_object => params
+        )
+      end
+      response = method_call.call()
+      if response.status == Borneo::ResponseStatus::STALE_ACCESS_TOKEN
+        _client.authorization.fetch_access_token!
+        response = method_call.call()
+      end
+      data = response.data
+    else
+      data = mock_service.mock_response(@_components)
+    end
+
+    data
+
+  end
+
   def _client
     @_service._client
   end
