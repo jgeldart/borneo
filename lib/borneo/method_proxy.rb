@@ -12,21 +12,29 @@ class Borneo::MethodProxy
     @_components << name
   end
 
-  def call(params = {})
-    method_call = lambda do
-      _client.execute(
-        :api_method => _method,
-        :authorization => _authorization,
-        :parameters => params
-      )
-    end
-    response = method_call.call()
-    if response.status == Borneo::ResponseStatus::STALE_ACCESS_TOKEN
-      _client.authorization.fetch_access_token!
-      response = method_call.call()
-    end
+  def mocking_enabled?
+    @_service.proxy.client.mocking_requests?
+  end
 
-    data = response.data
+  def call(params = {})
+    unless mocking_enabled?
+      method_call = lambda do
+        _client.execute(
+          :api_method => _method,
+          :authorization => _authorization,
+          :parameters => params
+        )
+      end
+      response = method_call.call()
+      if response.status == Borneo::ResponseStatus::STALE_ACCESS_TOKEN
+        _client.authorization.fetch_access_token!
+        response = method_call.call()
+      end
+
+      data = response.data
+    else
+      data = mock_service.mock_response(@_components)
+    end
 
     data
 
@@ -46,6 +54,10 @@ class Borneo::MethodProxy
       m = m.send(c)
     end
     m
+  end
+
+  def mock_service
+    Borneo::Client.stub_service(@_service.name, @_service.version)
   end
 
   def method_missing(name)

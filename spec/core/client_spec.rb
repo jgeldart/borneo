@@ -56,4 +56,32 @@ describe Borneo::Client do
 
   end
 
+  describe "mocking" do
+    let(:client) { Borneo::Client.new(client_id, client_secret, redirect_url) }
+
+    it "defaults to not mocking" do
+      client.should_not be_mocking_requests
+    end
+
+    it "can be set globally to use a mock rather than calling external services" do
+      Borneo::Client.enable_mocking!
+      client.should be_mocking_requests
+    end
+
+    it "can be set globally to disable mocking" do
+      Borneo::Client.enable_mocking!
+      client.should be_mocking_requests
+      Borneo::Client.disable_mocking!
+      client.should_not be_mocking_requests
+    end
+
+    describe "stub_service" do
+      it "should return a mock service" do
+        Borneo::Client.stub_service('plus', 'v1').should be_a(Borneo::Mock::Service)
+      end
+    end
+
+  end
+
+
 end

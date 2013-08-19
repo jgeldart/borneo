@@ -48,6 +48,28 @@ The objects returned from the methods behave like normal Ruby objects:
 Borneo raises an error if the operation wasn't permitted. If the access token is
 stale, the library will try to refresh it once before raising an error.
 
+## Mocking
+
+To help test these services, you can switch the library into 'mocking mode' by:
+
+    Borneo::Client.enable_mocking!
+
+Before each test, you may want to clear the existing mock returns by calling:
+
+    Borneo::Client.reset_mocks!
+
+If you are using RSpec, both of these can be done by adding the following to your `spec_helper.rb`:
+
+    require 'borneo/rspec'
+
+Declaring a simple mock response can then be done as follows:
+
+    Borneo::Client.stub_service('plus', 'v1').activities.list.to_return {:items => [ ... ]}
+
+Using the RSpec helpers, this may also be simplified to:
+
+    stub_service('plus', 'v1').activities.list.to_return {:items => [ ... ]}
+
 ## Contributing
 
 1. Fork it
