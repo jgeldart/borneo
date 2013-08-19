@@ -3,6 +3,8 @@
 Borneo makes working with Google's APIs as straightforward as navigating the jungle is
 for an orangutan.
 
+[![Build Status](https://travis-ci.org/jgeldart/borneo.png)](https://travis-ci.org/jgeldart/borneo)
+
 ## Installation
 
 Add this line to your application's Gemfile:
