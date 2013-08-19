@@ -1,5 +1,12 @@
 require 'rubygems'
-require 'ruby-debug'
+
+begin
+  # Only load if necessary
+  require 'ruby-debug'
+rescue LoadError
+  # Do nothing
+end
+
 require 'rspec'
 require 'webmock/rspec'
 
